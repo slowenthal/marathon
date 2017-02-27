@@ -820,6 +820,7 @@ class LaunchResults(object):
                 self.avg_response_time = (self.avg_response_time + response_time)/2
 
     def completed(self):
+        self.success = True
         self.current_response_time(time.time())
         self.current_test.add_event('launch successful')
 
@@ -890,6 +891,7 @@ class DeployResults(object):
                 self.avg_response_time = (self.avg_response_time + response_time)/2
 
     def completed(self):
+        self.success = True
         self.current_test.successful()
         self.current_response_time(time.time())
         self.current_test.add_event('deployment successful')
