@@ -1,3 +1,4 @@
+import retrying
 import time
 import traceback
 
@@ -792,7 +793,7 @@ class DCOSNotScalingException(DCOSException):
 class LaunchResults(object):
 
     def __init__(self, this_test):
-        self.success = True
+        self.success = False
         self.avg_response_time = 0.0
         self.last_response_time = 0.0
         self.start = this_test.start
@@ -831,7 +832,7 @@ class LaunchResults(object):
 class DeployResults(object):
 
     def __init__(self, this_test):
-        self.success = True
+        self.success = False
         self.avg_response_time = 0.0
         self.last_response_time = 0.0
         self.current_scale = 0
@@ -1050,8 +1051,12 @@ def create_test_object(marathon_name='root', under_test='apps', style='instances
 
 
 def scaletest_resources(test_obj):
-    return resources_needed(test_obj.target, .01, 32)
 
+    @retrying.retry(wait_fixed=1000, stop_max_delay=10000)
+    def get_resource_need():
+        return resources_needed(test_obj.target, .01, 32)
+
+    return get_resource_need()
 
 def outstanding_deployments():
     """ Provides a count of deployments still looking to land.
@@ -1123,3 +1128,9 @@ def private_resources_available():
 
 def public_resources_available():
     return len(get_public_agents()) * Resources(4, 14018.0)
+
+
+@retrying.retry(wait_fixed=1000, stop_max_delay=3000)
+def check_cluster_exists():
+    response = http.get(shakedown.dcos_url())
+    assert response.status_code == 200

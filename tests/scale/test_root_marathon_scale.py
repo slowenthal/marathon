@@ -21,13 +21,6 @@ test_log = []
 ##############
 
 
-def test_blah():
-
-    for num in range(1, 3000 + 1):
-        if not num % 1000:
-            print(num)
-
-
 @pytest.mark.parametrize("num_apps, num_instances", [
   (1, 1),
   (1, 10),
@@ -114,6 +107,9 @@ def initalize_test(marathon_name='root', under_test='apps', style='instances', n
     if previous_style_test_failed(current_test):
         current_test.skip('smaller scale failed')
 
+    if current_test.skipped:
+        pytest.skip()
+
     return current_test
 
 
@@ -159,11 +155,20 @@ def teardown_module(module):
     write_csv(stats)
     read_csv()
     write_meta_data(get_metadata())
-    delete_all_apps_wait()
+
+    try:
+        delete_all_apps_wait()
+    except:
+        pass
 
 
 def get_metadata():
-    version = ee_version()
+    version = None
+
+    try:
+        ee_version()
+    except:
+        pass
 
     metadata = {
         'marathon': 'root'
