@@ -152,6 +152,7 @@ node('JenkinsMarathonCI-Debian8-1-2017-02-23') { try {
         }
       }
     } catch (Exception err) {
+        echo err
         currentBuild.result = 'FAILURE'
     } finally {
         step([ $class: 'GitHubCommitStatusSetter'
