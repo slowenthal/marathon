@@ -121,11 +121,11 @@ node('JenkinsMarathonCI-Debian8-1-2017-02-23') { try {
         )
       }
       stage("6. Archive Artifacts") {
-          archiveArtifacts artifacts: 'target/**/classes/**', allowEmptyArchive: true
-          archiveArtifacts artifacts: 'target/marathon-runnable.jar', allowEmptyArchive: true
-          archiveArtifacts artifacts: "target/marathon-${gitCommit}.tgz", allowEmptyArchive: false
-          archiveArtifacts artifacts: "marathon-pkg/marathon*.deb", allowEmptyArchive: false
-          archiveArtifacts artifacts: "marathon-pkg/marathon*.rpm", allowEmptyArchive: false
+         // archiveArtifacts artifacts: 'target/**/classes/**', allowEmptyArchive: true
+         // archiveArtifacts artifacts: 'target/marathon-runnable.jar', allowEmptyArchive: true
+         // archiveArtifacts artifacts: "target/marathon-${gitCommit}.tgz", allowEmptyArchive: false
+         // archiveArtifacts artifacts: "marathon-pkg/marathon*.deb", allowEmptyArchive: false
+         // archiveArtifacts artifacts: "marathon-pkg/marathon*.rpm", allowEmptyArchive: false
           step([
               $class: 'S3BucketPublisher',
               entries: [[
