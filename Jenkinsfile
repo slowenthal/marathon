@@ -121,11 +121,13 @@ node('JenkinsMarathonCI-Debian8-1-2017-02-23') { try {
         )
       }
       stage("6. Archive Artifacts") {
+         echo "archive tarball"
          // archiveArtifacts artifacts: 'target/**/classes/**', allowEmptyArchive: true
          // archiveArtifacts artifacts: 'target/marathon-runnable.jar', allowEmptyArchive: true
          archiveArtifacts artifacts: "target/marathon-${gitCommit}.tgz", allowEmptyArchive: false
          // archiveArtifacts artifacts: "marathon-pkg/marathon*.deb", allowEmptyArchive: false
          // archiveArtifacts artifacts: "marathon-pkg/marathon*.rpm", allowEmptyArchive: false
+         echo "upload to s3"
           step([
               $class: 'S3BucketPublisher',
               entries: [[
@@ -152,6 +154,7 @@ node('JenkinsMarathonCI-Debian8-1-2017-02-23') { try {
         }
       }
     } catch (Exception err) {
+        echo "caught error"
         echo err
         currentBuild.result = 'FAILURE'
     } finally {
