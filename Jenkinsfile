@@ -121,6 +121,21 @@ node('JenkinsMarathonCI-Debian8-1-2017-02-23') { try {
           archiveArtifacts artifacts: "target/marathon-${gitCommit}.tgz", allowEmptyArchive: false
           archiveArtifacts artifacts: "marathon-pkg/marathon*.deb", allowEmptyArchive: false
           archiveArtifacts artifacts: "marathon-pkg/marathon*.rpm", allowEmptyArchive: false
+          step([
+              $class: 'S3BucketPublisher',
+              entries: [[
+                  sourceFile: 'target/marathon-${gitCommit}.tgz',
+                  bucket: 'marathon-artifacts',
+                  selectedRegion: 'us-west-2',
+                  noUploadOnFailure: true,
+                  managedArtifacts: true,
+                  flatten: true,
+                  showDirectlyInBrowser: false,
+                  keepForever: true,
+              ]],
+              profileName: 'marathon-artifacts',
+              dontWaitForConcurrentBuildCompletion: false,
+          ])
       }
       // Only create latest-dev snapshot for master.
       if( env.BRANCH_NAME == "master" ) {
