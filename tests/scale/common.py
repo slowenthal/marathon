@@ -220,7 +220,7 @@ def launch_apps2(test_obj):
 
             # 5 tries to see if scale increases, if no abort
             # 5 consecutive failures
-            if scale_failure_count > 5:
+            if scale_failure_count > 10:
                 abort_msg = 'Aborting based on too many failures: {}'.format(scale_failure_count)
                 abort = True
                 # leave the loop and end the test
@@ -417,7 +417,7 @@ def count_deployment(test_obj, step_target):
 
             # 5 tries to see if scale increases, if no abort
             # 5 consecutive failures
-            if scale_failure_count > 5:
+            if scale_failure_count > 10:
                 deploy_results.failed('Aborting based on too many failures: {}'.format(scale_failure_count))
                 abort = True
             # need some time
@@ -437,7 +437,7 @@ def count_deployment(test_obj, step_target):
             failure_count = failure_count + 1
 
             # consecutive failures > x will fail test
-            if failure_count > 5:
+            if failure_count > 10:
                 message = 'Too many failures query for deployments'
                 print("************ {} *********".format(message))
                 deploy_results.failed(message)
@@ -504,7 +504,7 @@ def time_deployment2(test_obj):
             failure_count = failure_count + 1
 
             # consecutive failures > x will fail test
-            if failure_count > 5:
+            if failure_count > 10:
                 message = 'Too many failures query for deployments'
                 print("************ {} *********".format(message))
                 deploy_results.failed(message)
@@ -530,7 +530,7 @@ def abort_deployment_check(test_obj):
         It looks at things like time duration
     """
     # no test takes longer than 3 hours regardless
-    hours = 3
+    hours = 10
     if elapse_time(test_obj.start) > hours * 60 * 60:
         test_obj.add_event("Test taking longer than {} hours".format(hours))
         return True
@@ -858,7 +858,7 @@ class DeployResults(object):
 
     def set_current_scale(self, task_count):
 
-        minutes = 10
+        minutes = 20
         # initalize timer (it is reset for ever successful increment)
         if self.current_test.loop_count == 0:
             self.end_time = time.time() + minutes * 60

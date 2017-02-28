@@ -53,7 +53,7 @@ def test_instance_scale(num_apps, num_instances):
   (5000, 1),
   (10000, 1),
   (25000, 1),
-  (50000, 1)  
+  (50000, 1)
 ])
 def test_count_scale(num_apps, num_instances):
     """ Runs scale test on `num_apps` usually 1 instance each.
