@@ -35,6 +35,8 @@ def stageWithCommitStatus(label, block) {
   stage(label) { withCommitStatus(label, block) }
 }
 
+def error = null
+
 node('JenkinsMarathonCI-Debian8-1-2017-02-23') { try {
         stage("Checkout Repo") {
             checkout scm
@@ -154,14 +156,17 @@ node('JenkinsMarathonCI-Debian8-1-2017-02-23') { try {
         }
       }
     } catch (Exception err) {
-        echo "caught error"
-        echo err.getMessage()
-        echo err.getStackTrace()
+        error = err
         currentBuild.result = 'FAILURE'
     } finally {
         step([ $class: 'GitHubCommitStatusSetter'
              , errorHandlers: [[$class: 'ShallowAnyErrorHandler']]
              , contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: "Velocity All"]
              ])
+
+        // Rethrow error
+        if (error) {
+            throw error
+        }
     }
 }
