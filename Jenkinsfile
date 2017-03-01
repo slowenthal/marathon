@@ -129,11 +129,10 @@ node('JenkinsMarathonCI-Debian8-1-2017-02-23') { try {
          archiveArtifacts artifacts: "target/marathon-${gitCommit}.tgz", allowEmptyArchive: false
          // archiveArtifacts artifacts: "marathon-pkg/marathon*.deb", allowEmptyArchive: false
          // archiveArtifacts artifacts: "marathon-pkg/marathon*.rpm", allowEmptyArchive: false
-         echo "upload to s3"
           step([
               $class: 'S3BucketPublisher',
               entries: [[
-                  sourceFile: 'target/marathon-${gitCommit}.tgz',
+                  sourceFile: "target/marathon-${gitCommit}.tgz",
                   bucket: 'marathon-artifacts',
                   selectedRegion: 'us-west-2',
                   noUploadOnFailure: true,
