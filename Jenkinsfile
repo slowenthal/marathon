@@ -144,6 +144,7 @@ node('JenkinsMarathonCI-Debian8-1-2017-02-23') { try {
               ]],
               profileName: 'marathon-artifacts',
               dontWaitForConcurrentBuildCompletion: false,
+              consoleLogLevel: 'INFO'
           ])
       }
       // Only create latest-dev snapshot for master.
